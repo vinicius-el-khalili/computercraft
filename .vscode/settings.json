@@ -1,0 +1,11 @@
+{
+    "Lua.runtime.version": "Lua 5.1",
+    "Lua.workspace.library": [
+        "${workspaceFolder}/lib"
+    ],
+    "Lua.diagnostics.globals": [
+        "term", "peripheral", "rednet", "fs", "os", "turtle", "redstone"
+    ],
+    "Lua.workspace.checkThirdParty": false
+}
+  
