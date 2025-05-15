@@ -1,3 +1,5 @@
+-- wget run https://raw.githubusercontent.com/vinicius-el-khalili/computercraft/refs/heads/master/wheatFarm.lua
+
 ---------------------------------------------------------------
 ---------------------------------------------------------------
 --- RABBIT
@@ -31,10 +33,7 @@ end
 ---@field y number
 ---@field orientation '"N"'|'"E"'|'"S"'|'"W"'
 ---@field matrix any[][]
----@field turtleTurnLeft any
----@field turtleTurnRight any
----@field turtleForward any
----@field turtleBack any
+---@field turtleEnabled boolean
 local Rabbit = {}
 Rabbit.__index = Rabbit
 
@@ -45,6 +44,7 @@ function Rabbit:new(matrixSize)
         y = 2,
         orientation = 'N',
         matrix = createMatrix(matrixSize,matrixSize),
+        turtleEnabled = false
     },Rabbit)
     obj.matrix[obj.x][obj.y]='*'
     return obj
@@ -72,8 +72,8 @@ function Rabbit:turnLeft()
         if dir == self.orientation then
             local newIndex = (i - 2) % #orientations + 1
             self.orientation = orientations[newIndex]
-            if self.turtleTurnLeft then
-                self.turtleTurnLeft()
+            if self.turtleEnabled then
+                turtle.turnLeft()
             end
             return
         end
@@ -85,8 +85,8 @@ function Rabbit:turnRight()
         if dir == self.orientation then
             local newIndex = (i % #orientations) + 1
             self.orientation = orientations[newIndex]
-            if self.turtleTurnRight then
-                self.turtleTurnRight()
+            if self.turtleEnabled then
+                turtle.turnRight()
             end
             return
         end
@@ -107,8 +107,8 @@ function Rabbit:forward()
         self.x = newX
         self.y = newY
         self.matrix[newX][newY] = '*'
-        if self.turtleForward then
-            self.turtleForward()
+        if self.turtleEnabled then
+            turtle.forward()
         end
     else
         print("Cannot move forward: out of bounds.")
@@ -124,8 +124,8 @@ function Rabbit:back()
         self.x = newX
         self.y = newY
         self.matrix[newX][newY] = '*'
-        if self.turtleBack then
-            self.turtleBack()
+        if self.turtleEnabled then
+            turtle.back()
         end
     else
         print("Cannot move backward: out of bounds.")
@@ -138,30 +138,78 @@ end
 ---------------------------------------------------------------
 ---------------------------------------------------------------
 
-local rabbit = Rabbit.new(Rabbit,20)
 
-local function move(number)
+function Rabbit:move(number)
     for i=1,number,1 do
-        rabbit.forward(rabbit)
+        self.forward(self)
     end
 end
 
-local function farmBlock()
-    rabbit.matrix[rabbit.x][rabbit.y]="w"
+function Rabbit:organizeInventory()
+    if (not self.turtleEnabled) then
+        return
+    end
+    for slot=1,16 do
+        if(turtle.getItemDetail(slot)) then
+            if(turtle.getItemDetail(slot).name=="minecraft:wheat_seeds") then
+                turtle.select(slot)
+                turtle.transferTo(1)
+            end
+        end
+    end
+    turtle.select(1)
 end
 
-local function farmStraightLine(number)
+function Rabbit:dropInventory()
+    if (not self.turtleEnabled) then
+        return
+    end
+    for slot=1,16 do
+        turtle.select(slot)
+        if(turtle.getItemDetail(slot)) then
+            if(turtle.getItemDetail(slot).name=="minecraft:wheat") then
+                turtle.dropDown()
+            end
+        end
+    end
+    self.organizeInventory(self)
+end
+
+function Rabbit:verifySeedCount()
+    if (not self.turtleEnabled) then
+        return
+    end
+    if(turtle.getItemCount(1)==0) then
+        self.organizeInventory(self)
+    end
+end
+
+function Rabbit:farmBlock()
+    if (not self.turtleEnabled) then
+        self.matrix[self.x][self.y]="w"
+        return
+    end
+    self.verifySeedCount(self)
+    turtle.digDown()
+    turtle.placeDown()
+    self.matrix[self.x][self.y]="w"
+end
+
+function Rabbit:farmStraightLine(number)
     for i=1,number,1 do
-        farmBlock()
+        self.farmBlock(self)
         if (i<number) then
-            rabbit.forward(rabbit)
+            self.forward(self)
         end
     end
 end
 
-local function main()
+local function main(turtleEnabled)
+    local rabbit = Rabbit.new(Rabbit,20)
+    rabbit.turtleEnabled = turtleEnabled
+    rabbit.organizeInventory(rabbit)
     for i=1,9 do
-        farmStraightLine(9)
+        rabbit.farmStraightLine(rabbit,9)
         if (i%2==1) then
             rabbit.turnLeft(rabbit)
             rabbit.forward(rabbit)
@@ -172,19 +220,13 @@ local function main()
             rabbit.turnRight(rabbit)
         end
     end
-    move(9)
+    rabbit.move(rabbit,9)
     rabbit.turnLeft(rabbit)
-    move(9)
+    rabbit.move(rabbit,9)
     rabbit.turnLeft(rabbit)
+    rabbit.dropInventory(rabbit)
+    rabbit.forward(rabbit)
+    rabbit.printMatrix(rabbit)
 end
 
-main()
-rabbit.printMatrix(rabbit)
-rabbit.printPosition(rabbit)
-
-function Rabbit:wtf ()
-    print('wtf kkk lol')
-    print(self.orientation)
-end
-
-rabbit.wtf(rabbit)
+main(true)
