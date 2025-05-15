@@ -51,7 +51,7 @@ local function main()
     organizeInventory()
     for i=1,n,1 do
         farmLine()
-        if(isOdd(i)) then
+        if(isOdd(i) and i<n-1) then
             turtle.turnLeft()
             turtle.forward()
             turtle.turnLeft()
