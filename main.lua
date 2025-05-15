@@ -34,7 +34,9 @@ end
 local function farmLine()
     for i=1,n,1 do
         farmBlock()
-        turtle.forward()
+        if(i<n) then
+            turtle.forward()
+        end
     end
 end
 
