@@ -1,5 +1,3 @@
--- wget run https://raw.githubusercontent.com/vinicius-el-khalili/computercraft/refs/heads/master/main.lua
-
 ---------------------------------------------------------------
 ---------------------------------------------------------------
 --- RABBIT
@@ -141,55 +139,20 @@ end
 ---------------------------------------------------------------
 
 local rabbit = Rabbit.new(Rabbit,20)
-rabbit.turtleTurnLeft = turtle.turnLeft
-rabbit.turtleTurnRight = turtle.turnRight
-rabbit.turtleForward = turtle.forward
-rabbit.turtleBack = turtle.back
 
-function Rabbit:move(number)
+local function move(number)
     for i=1,number,1 do
         rabbit.forward(rabbit)
     end
 end
 
-function Rabbit:organizeInventory()
-    for slot=1,16 do
-        if(turtle.getItemDetail(slot)) then
-            if(turtle.getItemDetail(slot).name=="minecraft:wheat_seeds") then
-                turtle.select(slot)
-                turtle.transferTo(1)
-            end
-        end
-    end
-    turtle.select(1)
-end
-
-function Rabbit:dropInventory()
-    for slot=1,16 do
-        turtle.select(slot)
-        if(turtle.getItemDetail(slot).name=="minecraft:wheat") then
-            turtle.dropDown()
-        end
-    end
-    self.organizeInventory(self)
-end
-
-function Rabbit:verifySeedCount()
-    if(turtle.getItemCount(1)==0) then
-        self.organizeInventory(self)
-    end
-end
-
-function Rabbit:farmBlock()
-    self.verifySeedCount(self)
+local function farmBlock()
     rabbit.matrix[rabbit.x][rabbit.y]="w"
-    turtle.digDown()
-    turtle.placeDown()
 end
 
-function Rabbit:farmStraightLine(number)
+local function farmStraightLine(number)
     for i=1,number,1 do
-        self.farmBlock(self)
+        farmBlock()
         if (i<number) then
             rabbit.forward(rabbit)
         end
@@ -197,9 +160,8 @@ function Rabbit:farmStraightLine(number)
 end
 
 local function main()
-    rabbit.organizeInventory(rabbit)
     for i=1,9 do
-        rabbit.farmStraightLine(rabbit,8)
+        farmStraightLine(8)
         if (i%2==1) then
             rabbit.turnLeft(rabbit)
             rabbit.forward(rabbit)
@@ -210,12 +172,19 @@ local function main()
             rabbit.turnRight(rabbit)
         end
     end
-    rabbit.move(rabbit,9)
+    move(9)
     rabbit.turnLeft(rabbit)
-    rabbit.move(rabbit,9)
+    move(9)
     rabbit.turnLeft(rabbit)
-    rabbit.dropInventory(rabbit)
-    rabbit.forward(rabbit)
 end
 
 main()
+rabbit.printMatrix(rabbit)
+rabbit.printPosition(rabbit)
+
+function Rabbit:wtf ()
+    print('wtf kkk lol')
+    print(self.orientation)
+end
+
+rabbit.wtf(rabbit)

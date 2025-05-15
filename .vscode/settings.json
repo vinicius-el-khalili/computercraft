@@ -6,6 +6,10 @@
     "Lua.diagnostics.globals": [
         "term", "peripheral", "rednet", "fs", "os", "turtle", "redstone"
     ],
-    "Lua.workspace.checkThirdParty": false
+    "Lua.workspace.checkThirdParty": false,
+    "Lua.diagnostics.disable": [
+        "duplicate-set-field",
+        "duplicate-doc-field"
+    ]
 }
   
