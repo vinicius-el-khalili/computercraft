@@ -166,8 +166,10 @@ function Rabbit:dropInventory()
     end
     for slot=1,16 do
         turtle.select(slot)
-        if(turtle.getItemDetail(slot).name=="minecraft:wheat") then
-            turtle.dropDown()
+        if(turtle.getItemDetail(slot)) then
+            if(turtle.getItemDetail(slot).name=="minecraft:wheat") then
+                turtle.dropDown()
+            end
         end
     end
     self.organizeInventory(self)
