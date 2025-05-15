@@ -4,9 +4,11 @@ local n = 9
 
 local function organizeInventory()
     for slot=1,16,1 do
-        if(turtle.getItemDetail(slot).name=="minecraft:wheat_seeds") then
-            turtle.select(slot)
-            turtle.transferTo(1)
+        if(turtle.getItemDetail(slot)) then
+            if(turtle.getItemDetail(slot).name=="minecraft:wheat_seeds") then
+                turtle.select(slot)
+                turtle.transferTo(1)
+            end
         end
     end
     turtle.select(1)
@@ -45,6 +47,7 @@ local function isOdd(number)
 end
 
 local function main()
+    organizeInventory()
     for i=1,n,1 do
         farmLine()
         if(isOdd(i)) then
