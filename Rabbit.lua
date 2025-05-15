@@ -129,3 +129,5 @@ function Rabbit:back()
         print("Cannot move backward: out of bounds.")
     end
 end
+
+return Rabbit
