@@ -3,6 +3,7 @@
 local n = 9
 
 local function organizeInventory()
+    print("organizeInventory")
     for slot=1,16,1 do
         if(turtle.getItemDetail(slot)) then
             if(turtle.getItemDetail(slot).name=="minecraft:wheat_seeds") then
