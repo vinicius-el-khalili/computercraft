@@ -61,6 +61,10 @@ local function main()
             turtle.turnRight()
         end
     end
+    moveForwardLine(n-1)
+    turtle.turnLeft()
+    moveForwardLine(n-1)
+    turtle.turnLeft()
 end
 
 main()
