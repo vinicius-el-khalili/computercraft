@@ -161,7 +161,7 @@ end
 
 local function main()
     for i=1,9 do
-        farmStraightLine(8)
+        farmStraightLine(9)
         if (i%2==1) then
             rabbit.turnLeft(rabbit)
             rabbit.forward(rabbit)

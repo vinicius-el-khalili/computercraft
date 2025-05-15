@@ -31,10 +31,7 @@ end
 ---@field y number
 ---@field orientation '"N"'|'"E"'|'"S"'|'"W"'
 ---@field matrix any[][]
----@field turtleTurnLeft any
----@field turtleTurnRight any
----@field turtleForward any
----@field turtleBack any
+---@field turtleEnabled boolean
 local Rabbit = {}
 Rabbit.__index = Rabbit
 
@@ -45,6 +42,7 @@ function Rabbit:new(matrixSize)
         y = 2,
         orientation = 'N',
         matrix = createMatrix(matrixSize,matrixSize),
+        turtleEnabled = false
     },Rabbit)
     obj.matrix[obj.x][obj.y]='*'
     return obj
@@ -72,8 +70,8 @@ function Rabbit:turnLeft()
         if dir == self.orientation then
             local newIndex = (i - 2) % #orientations + 1
             self.orientation = orientations[newIndex]
-            if self.turtleTurnLeft then
-                self.turtleTurnLeft()
+            if self.turtleEnabled then
+                turtle.turnLeft()
             end
             return
         end
@@ -85,8 +83,8 @@ function Rabbit:turnRight()
         if dir == self.orientation then
             local newIndex = (i % #orientations) + 1
             self.orientation = orientations[newIndex]
-            if self.turtleTurnRight then
-                self.turtleTurnRight()
+            if self.turtleEnabled then
+                turtle.turnRight()
             end
             return
         end
@@ -107,8 +105,8 @@ function Rabbit:forward()
         self.x = newX
         self.y = newY
         self.matrix[newX][newY] = '*'
-        if self.turtleForward then
-            self.turtleForward()
+        if self.turtleEnabled then
+            turtle.forward()
         end
     else
         print("Cannot move forward: out of bounds.")
@@ -124,8 +122,8 @@ function Rabbit:back()
         self.x = newX
         self.y = newY
         self.matrix[newX][newY] = '*'
-        if self.turtleBack then
-            self.turtleBack()
+        if self.turtleEnabled then
+            turtle.back()
         end
     else
         print("Cannot move backward: out of bounds.")
